@@ -1,0 +1,29 @@
+diff --git a/dist/build.js b/dist/build.js
+index 1f7092466762f8b84f363cd5bb18facf36ea98cf..3ab285a522625badaad0a315251e70aec52edc8b 100644
+--- a/dist/build.js
++++ b/dist/build.js
+@@ -196,12 +196,20 @@ module.exports = config;`;
+         const keys = [];
+         // Replace "/*" at the end to handle "splat routes"
+         const rePath = `/${path.replace(/\/\*$/, '/:params+')}`;
+-        const re = (0, path_to_regexp_1.pathToRegexp)(rePath, keys);
+-        if (keys.length > 0) {
++
++        if (path.endsWith("*")) {
++          routes.push({
++            src: `/${path.replace(/\/\*$/, "/(.*)")}`,
++            dest: path,
++          });
++        } else {
++          const re = (0, path_to_regexp_1.pathToRegexp)(rePath, keys);
++          if (keys.length > 0) {
+             routes.push({
+-                src: re.source,
+-                dest: path,
++              src: re.source,
++              dest: path,
+             });
++          }
+         }
+     }
+     // Add a 404 path for not found pages to be server-side rendered by Remix.
